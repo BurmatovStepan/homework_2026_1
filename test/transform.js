@@ -26,4 +26,28 @@ QUnit.module('Тестируем функцию transform', () => {
 
         assert.deepEqual(result, { a: [3, 6, 9], b: 12 }, 'Элементы массива должны быть умножены на 3');
     });
+
+    QUnit.test('Работает правильно с особыми константами', (assert) => {
+        const originalObject = {a: null, b: NaN, c: Infinity, d: [null, NaN, -Infinity]};
+        const transformFunction = (value) => value - 100;
+        const result = transform(originalObject, transformFunction);
+
+        assert.deepEqual(result, {a: -100, b: NaN, c: Infinity, d: [-100, NaN, -Infinity]}, 'Константы должны изменяться по стандартной логике JS');
+    });
+
+    QUnit.test('Глубокое преобразование вложенных объектов', (assert) => {
+        const originalObject = { a: 1, b: { c: 2, d: [3] } };
+        const transformFunction = (value) => value + 10;
+        const result = transform(originalObject, transformFunction);
+
+        assert.deepEqual(result, { a: 11, b: { c: 12, d: [13] } }, 'Должно работать на любой глубине вложенности');
+    });
+
+    QUnit.test('Работает со строками', (assert) => {
+        const originalObject = {a: "123", b: "Hello", v: [null, "hi", 2.23]};
+        const transformFunction = (value) => value + "@!";
+        const result = transform(originalObject, transformFunction);
+
+        assert.deepEqual(result, {a: "123@!", b: "Hello@!", v: ["null@!", "hi@!", "2.23@!"]}, 'Должно работать со строками');
+    });
 });
