@@ -50,4 +50,13 @@ QUnit.module('Тестируем функцию transform', () => {
 
         assert.deepEqual(result, {a: "123@!", b: "Hello@!", v: ["null@!", "hi@!", "2.23@!"]}, 'Должно работать со строками');
     });
+
+    QUnit.test('Не изменяет оригинальный объект', (assert) => {
+        const originalObject = { a: 23, b: ["323", { c: null, d: 2.321 }], e: NaN };
+        const transformFunction = (value) => value - 10;
+        const result = transform(originalObject, transformFunction);
+
+        assert.deepEqual(result, { a: 13, b: [313, { c: -10, d: -7.679 }], e: NaN }, 'Результатом должен быть измененный объект');
+        assert.deepEqual(originalObject, { a: 23, b: ["323", { c: null, d: 2.321 }], e: NaN }, 'Оригинальный объект не должен изменяться');
+    })
 });

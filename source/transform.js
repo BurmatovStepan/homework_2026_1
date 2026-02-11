@@ -11,16 +11,16 @@
  * @returns { Object }
  */
 const transform = (initialObject, transformFunction) => {
-    if (initialObject !== null && typeof initialObject === "object") {
-        for (const key of Object.keys(initialObject)) {
-            if (initialObject[key] === null || typeof initialObject[key] !== "object") {
-                initialObject[key] = transformFunction(initialObject[key]);
-
-            } else {
-                initialObject[key] = transform(initialObject[key], transformFunction);
-            }
-        }
+    if (initialObject === null || typeof initialObject !== "object") {
+        return transformFunction(initialObject);
     }
 
-    return initialObject;
+    if (Array.isArray(initialObject)) {
+        return initialObject.map(item => transform(item, transformFunction));
+    }
+
+    return Object.keys(initialObject).reduce((acc, key) => {
+        acc[key] = transform(initialObject[key], transformFunction);
+        return acc;
+    }, {});
 };
