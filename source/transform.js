@@ -15,6 +15,13 @@ const transform = (initialObject, transformFunction) => {
         return transformFunction(initialObject);
     }
 
+    if (initialObject instanceof String ||
+        initialObject instanceof Number ||
+        initialObject instanceof Boolean
+    ) {
+        return transformFunction(initialObject.valueOf())
+    }
+
     if (Array.isArray(initialObject)) {
         return initialObject.map(item => transform(item, transformFunction));
     }

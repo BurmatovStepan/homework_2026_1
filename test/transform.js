@@ -59,4 +59,16 @@ QUnit.module('Тестируем функцию transform', () => {
         assert.deepEqual(result, { a: 13, b: [313, { c: -10, d: -7.679 }], e: NaN }, 'Результатом должен быть измененный объект');
         assert.deepEqual(originalObject, { a: 23, b: ["323", { c: null, d: 2.321 }], e: NaN }, 'Оригинальный объект не должен изменяться');
     })
+
+    QUnit.test('Работает с примитивами, созданными через new', (assert) => {
+        const originalObject = {a: new String("123"), b: new Number("123"), c: new Boolean("123"), d: "normal", v: [new String("321"), 321]};
+        const transformFunctionString = (value) => value + "@!";
+        const resultStringTransform = transform(originalObject, transformFunctionString);
+
+        const transformFunctionMultiply = (value) => value * value;
+        const resultMultiplyTransform = transform(originalObject, transformFunctionMultiply);
+
+        assert.deepEqual(resultStringTransform, {a: "123@!", b: "123@!", c: "true@!", d: "normal@!", v: ["321@!", "321@!"]}, 'Должно работать с примитивами, созданными через new');
+        assert.deepEqual(resultMultiplyTransform, {a: 123 ** 2, b: 123 ** 2, c: 1, d: NaN, v: [321 ** 2, 321 ** 2]}, 'Должно работать с примитивами, созданными через new');
+    });
 });
